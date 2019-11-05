@@ -9,6 +9,6 @@ namespace MyNotes
 		Add,
 		Remove,
 		Change,
-		Choose
+		Show
 	}
 }

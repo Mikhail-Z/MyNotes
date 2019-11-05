@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyNotes.ViewModels;
+using Prism.Commands;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -13,11 +15,11 @@ using System.Windows.Shapes;
 namespace MyNotes.Windows
 {
 	/// <summary>
-	/// Interaction logic for RemoveContactInfo.xaml
+	/// Interaction logic for ChangeContactInfoWindow.xaml
 	/// </summary>
-	public partial class RemoveContactInfoWindow : Window
+	public partial class EditContactWindow : Window
 	{
-		public RemoveContactInfoWindow()
+		public EditContactWindow()
 		{
 			InitializeComponent();
 		}

@@ -6,41 +6,41 @@ using System.Linq;
 
 namespace MyNotes.Infrastructure
 {
-	public class ContactInfoAdapter
+	public class ContactDto
 	{
-		public ContactInfoAdapter() { }
+		public ContactDto() { }
 
-		public ContactInfoAdapter(Contact contactInfo)
+		public ContactDto(Contact contact)
 		{
-			Name = contactInfo.Name;
-			HomePhones = ConvertCollectionToViewRepresentation(contactInfo.HomePhones);
-			WorkPhones = ConvertCollectionToViewRepresentation(contactInfo.WorkPhones);
-			Emails = ConvertCollectionToViewRepresentation(contactInfo.Emails);
-			SkypeAccounts = ConvertCollectionToViewRepresentation(contactInfo.SkypeAccounts);
-			Comment = contactInfo.Comment;
+			Name = contact.Name;
+			//HomePhones = ConvertCollectionToViewRepresentation(contact.HomePhones);
+			//WorkPhones = ConvertCollectionToViewRepresentation(contact.WorkPhones);
+			//Emails = ConvertCollectionToViewRepresentation(contact.Emails);
+			//Skypes = ConvertCollectionToViewRepresentation(contact.Skypes);
+			Comment = contact.Comment;
 		}
 
-		public static explicit operator Contact(ContactInfoAdapter contactInfoAdapter)
+		public static explicit operator Contact(ContactDto contactInfoAdapter)
 		{
 			return new Contact
 			{
 				Name = contactInfoAdapter.Name,
-				HomePhones = contactInfoAdapter.HomePhones
+				/*HomePhones = contactInfoAdapter.HomePhones?
 					.Split(';')
 					.Select(x => new HomePhone { Value = x.Trim() })
-					.ToArray(),
-				WorkPhones = contactInfoAdapter.WorkPhones
+					.ToArray() ?? new HomePhone[0],
+				WorkPhones = contactInfoAdapter.WorkPhones?
 					.Split(';')
 					.Select(x => new WorkPhone { Value = x.Trim() })
-					.ToArray(),
-				Emails = contactInfoAdapter.Emails
+					.ToArray() ?? new WorkPhone[0],
+				Emails = contactInfoAdapter.Emails?
 					.Split(';')
 					.Select(x => new Email { Value = x.Trim() })
-					.ToArray(),
-				SkypeAccounts = contactInfoAdapter.SkypeAccounts
+					.ToArray() ?? new Email[0],
+				Skypes = contactInfoAdapter.Skypes?
 					.Split(';')
 					.Select(x => new Skype { Value = x.Trim() })
-					.ToArray(),
+					.ToArray() ?? new Skype[0],*/
 				BirthDay = contactInfoAdapter.BirthDay,
 				Comment = contactInfoAdapter.Comment
 			};
@@ -54,7 +54,7 @@ namespace MyNotes.Infrastructure
 
 		public string Emails { get; set; }
 
-		public string SkypeAccounts { get; set; }
+		public string Skypes { get; set; }
 
 		public DateTime? BirthDay { get; set; }
 

@@ -4,7 +4,8 @@ using System.Text;
 
 namespace MyNotes.Domain.Entities
 {
-	public class WorkPhone : ContactBase
+	public class WorkPhone : ValueBase
 	{
+		public Contact Contact { get; set; }
 	}
 }

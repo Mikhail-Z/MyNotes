@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyNotes.Domain.Entities
 {
-	public abstract class ContactBase : EntityBase
+	public abstract class ValueBase : EntityBase
 	{
 		public string Value { get; set; }
 	}

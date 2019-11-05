@@ -1,16 +1,22 @@
 ﻿using MyNotes.Domain.Entities;
+using MyNotes.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MyNotes.Services.Interfaces
 {
 	public interface IContactManagerService
 	{
-		IEnumerable<Contact> GetAllContacts();
+		Task<IEnumerable<ContactDto>> GetAllContacts(bool isBirthdaySoon);
 
-		void ChangeContact(Contact contactInfo);
+		Task<IEnumerable<ContactDto>> GetContactsByQuery(string searchQuery, bool isBirthdaySoon, char? firstLetter = null);
 
-		void RemoveContact(Contact contactInfo);
+		Task<int> UpdateContact(ContactDto contact);
+
+		Task<int> RemoveContact(ContactDto contact);
+
+		Task<int> AddContact(ContactDto contact);
 	}
 }

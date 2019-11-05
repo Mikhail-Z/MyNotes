@@ -27,32 +27,6 @@ namespace MyNotes
 		{
 			InitializeComponent();
 			DataContext = mainViewVM;
-
-
-			var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			var i = 0;
-			var curColumn = 0;
-			var curRow = 0;
-			foreach (var letter in alphabet)
-			{
-				Button newBtn = new Button();
-				newBtn.Content = letter;
-				if (i % 2 == 0)
-				{
-					newBtn.IsEnabled = false;
-				}
-				if (i == 13)
-				{
-					curColumn = 1;
-					curRow = 0;
-				}
-				Grid.SetRow(newBtn, curRow);
-				Grid.SetColumn(newBtn, curColumn);
-				newBtn.Style = this.FindResource("LetterBtnStyle") as Style;
-				AlphabetButtonsGrid.Children.Add(newBtn);
-				i++;
-				curRow++;
-			}
 		}
 	}
 }

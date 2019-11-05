@@ -4,9 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:local="clr-namespace:MyNotes"
-		xmlns:vm="clr-namespace:MyNotes.ViewModels"
-		xmlns:entities="clr-namespace:MyNotes.Infrastructure"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="480" Width="800">
 	<Window.Resources>
@@ -30,25 +27,25 @@
 				<ColumnDefinition Width="150" />
 			</Grid.ColumnDefinitions>
 			<ToolBar FontSize="13" Grid.Column="0" Height="50" VerticalAlignment="Top" Band="1" BandIndex="1">
-				<Button x:Name="AddBtn" IsEnabled="{Binding IsContactChosen}" Command="OpenWindow" CommandParameter="ContactInfoViewer">
+				<Button x:Name="AddBtn" Command="{Binding AddContactCommand}" IsEnabled="{Binding IsContactSelected}">
 					Добавить
 				</Button>
 				<Separator/>
-				<Button x:Name="ChooseBtn" IsEnabled="{Binding }">
+				<Button x:Name="ChooseBtn" Command="{Binding ShowContactCommand}" IsEnabled="{Binding IsContactSelected}">
 					Выбрать
 				</Button>
-				<Button x:Name="DeleteBtn">
+				<Button x:Name="DeleteBtn" Command="{Binding RemoveContactCommand}" IsEnabled="{Binding IsContactSelected}">
 					Удалить
 				</Button>
-				<Button x:Name="EditBtn">
+				<Button x:Name="EditBtn" Command="{Binding EditContactCommand}" IsEnabled="{Binding IsContactSelected}">
 					Редактировать
 				</Button>
 				<Separator />
 			</ToolBar>
-			<TextBox Grid.Column="1" Margin="5" Foreground="LightGray" Height="30" FontSize="16" HorizontalAlignment="Stretch">Поиск...</TextBox>
+			<TextBox Grid.Column="1" Margin="5" Height="30" FontSize="16" Text="{Binding SearchQuery}" HorizontalAlignment="Stretch" />
 			<StackPanel Grid.Column="2" Margin="5" VerticalAlignment="Center" Orientation="Horizontal">
-				<CheckBox VerticalAlignment="Center" Content="Скоро ДР" Margin="5"/>
-				<Button VerticalAlignment="Center" Grid.Row="0" Margin="5" BorderBrush="Black"  Height="30" FontSize="14">Найти</Button>
+				<CheckBox VerticalAlignment="Center" Content="Скоро ДР" Margin="5" IsChecked="{Binding BirthdaySoonIsChecked}"/>
+				<Button  VerticalAlignment="Center" Grid.Row="0" Margin="5" BorderBrush="Black"  Height="30" FontSize="14" Command="{Binding SearchContactsCommand}">Найти</Button>
 			</StackPanel>
 		</Grid>
 		<Grid Grid.Row="1">
@@ -63,48 +60,28 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 			<ScrollViewer Grid.Column="0" Grid.ColumnSpan="7">
-				<DataGrid x:Name="phonesGrid" AutoGenerateColumns="True" ColumnWidth="*" ItemsSource="{Binding}" HorizontalGridLinesBrush="DarkGray"
+				<DataGrid x:Name="phonesGrid" AutoGenerateColumns="True" IsReadOnly="True" ColumnWidth="*" SelectedItem="{Binding Path=SelectedContact}"  ItemsSource="{Binding Contacts}" HorizontalGridLinesBrush="DarkGray"
 					RowBackground="LightGray" RowHeight="30" FontSize="14" AlternatingRowBackground="White">
 					<i:Interaction.Triggers>
 						<i:EventTrigger EventName="SelectionChanged">
-							<i:InvokeCommandAction Command="{Binding EnableContextMenyButtons}" />
+							<i:InvokeCommandAction Command="{Binding EnableMenuButtons}"/>
 						</i:EventTrigger>
 					</i:Interaction.Triggers>
-
-					<DataGrid.Items>
-						<entities:ContactInfoAdapter Name="Zabelin.Mihail" BirthDay="09.04.1996" HomePhones="22-11-39; 22-73-45" WorkPhones="" Emails="mike.rzn@yandex.ru;mike.rzn@gmail.com" SkypeAccounts="mishka_school_5" Comment="Какой-то комментарий" />
-					</DataGrid.Items>
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="Имя" Binding="{Binding Path=Name}" Width="*" />
-						<DataGridTextColumn Header="День рождения" Binding="{Binding Path=BirthDay}" Width="*" />
-						<DataGridTextColumn Header="Домашний телефон" Binding="{Binding Path=HomePhones}" Width="*" />
-						<DataGridTextColumn Header="Рабочий телефон" Binding="{Binding Path=WorkPhones}" Width="*" />
-						<DataGridTextColumn Header="Электронная почта" Binding="{Binding Path=Emails}" Width="*" />
-						<DataGridTextColumn Header="Skype" Binding="{Binding Path=SkypeAccounts}" Width="*" />
-						<DataGridTextColumn Header="Комментарий" Binding="{Binding Path=Comment}" Width="*" />
-					</DataGrid.Columns>
 				</DataGrid>
 			</ScrollViewer>
 			<Grid x:Name="AlphabetButtonsGrid" Grid.Column="7">
-				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-					<RowDefinition/>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
+				<ListView ItemsSource="{Binding SearchAlphabet}">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<Button Margin="1" MinWidth="20" Width="30" MinHeight="20" Height="30" Content="{Binding Path=Letter}" IsEnabled="{Binding Path=IsEditable}"/>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="MouseDown">
+							<i:InvokeCommandAction Command="{Binding SearchByFirstLetterCommand}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+				</ListView>
 			</Grid>
 		</Grid>
 	</Grid>

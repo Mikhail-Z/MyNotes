@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace MyNotes.Domain.Interfaces
 {
-	public interface IAsyncRepository<T> where T : EntityBase
+	public interface IAsyncRepository<T> //where T : EntityBase
 	{
 		Task<T> GetByIdAsync(int id);
 
-		Task<int> CreateAsync(Contact contactInfo);
+		Task<int> CreateAsync(Contact contact);
 
-		Task<bool> UpdateAsync(Contact contactInfo);
+		Task<int> UpdateAsync(Contact contact);
 
-		Task<IEnumerable<T>> SearchAsync(Expression<Func<T, bool>> criteria);
+		Task<int> RemoveAsync(Contact contact);
+
+		Task<IEnumerable<T>> SearchAsync(Expression<Func<Contact, bool>> criteria);
 
 		Task<IEnumerable<T>> GetAll();
 	}
