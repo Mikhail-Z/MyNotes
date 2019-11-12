@@ -12,8 +12,15 @@
 			<RowDefinition/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
 		<TextBlock Grid.Row="0">Вы действительно хотите удалить контакт?</TextBlock>
-		<WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,15,0,0">
+		<WrapPanel Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right" Margin="0,15,0,0">
 			<Button IsDefault="True" Command="{Binding RemoveCommand}" MinWidth="60" Margin="0,0,10,0">OK</Button>
 			<Button IsCancel="True" Command="{Binding CancelCommand}" MinWidth="60">Отмена</Button>
 		</WrapPanel>

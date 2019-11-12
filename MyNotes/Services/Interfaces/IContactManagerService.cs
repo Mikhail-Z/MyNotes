@@ -9,9 +9,7 @@ namespace MyNotes.Services.Interfaces
 {
 	public interface IContactManagerService
 	{
-		Task<IEnumerable<ContactDto>> GetAllContacts(bool isBirthdaySoon);
-
-		Task<IEnumerable<ContactDto>> GetContactsByQuery(string searchQuery, bool isBirthdaySoon, char? firstLetter = null);
+		Task<IEnumerable<ContactDto>> GetContactsByQuery(string searchQuery, bool isBirthDaySoon, char? firstLetter = null);
 
 		Task<int> UpdateContact(ContactDto contact);
 

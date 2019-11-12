@@ -15,8 +15,8 @@ namespace MyNotes.ViewModels
 	{
 		private IContactManagerService _contactManagerService;
 		private ILogger<MainViewVM> _logger;
-		private ContactDto _chosenContact = null;
-		private bool _IsContactSelected = false;
+		private ContactDto _chosenContact;
+		private bool _isContactSelected = false;
 		private AlphabetSearchManager _alphabetSearchManager;
 		private ObservableCollection<AlphabetItem> _searchAlphabet;
 		private ObservableCollection<ContactDto> _contacts;
@@ -46,7 +46,8 @@ namespace MyNotes.ViewModels
 				Contacts = new ObservableCollection<ContactDto>(
 					_foundContacts.Where(x => x.Name.StartsWith(SelectedLetter)));
 			});
-			UpdateContactList();
+
+			ShowAllContacts();
 		}
 
 
@@ -58,7 +59,7 @@ namespace MyNotes.ViewModels
 		   set; 
 		}
 
-		public bool BirthdaySoonIsChecked
+		public bool BirthDaySoonIsChecked
 		{
 			get
 			{
@@ -67,7 +68,7 @@ namespace MyNotes.ViewModels
 			set
 			{
 				_birthdaySoonIsChecked = value;
-				RaisePropertyChanged("BirthdaySoonIsChecked");
+				Search();
 			}
 		}
 
@@ -114,11 +115,11 @@ namespace MyNotes.ViewModels
 		{
 			get
 			{
-				return _IsContactSelected;
+				return _isContactSelected;
 			}
 			set
 			{
-				_IsContactSelected = value;
+				_isContactSelected = value;
 				RaisePropertyChanged("IsContactSelected");
 			}
 		}
@@ -172,37 +173,43 @@ namespace MyNotes.ViewModels
 		void Add()
 		{
 			var viewModel = new ContactVM(new ContactDto(), _contactManagerService,
-				ServiceProviderFactory.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), true);
+				ServiceProviderSingleton.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), true);
 			WindowManager.OpenNewDialogWindow(viewModel, ModelAction.Add);
 			Search();
+			IsContactSelected = false;
 		}
 
 		void Remove()
 		{
 			var viewModel = new ContactVM(SelectedContact, _contactManagerService, 
-				ServiceProviderFactory.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), false);
+				ServiceProviderSingleton.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), false);
 			WindowManager.OpenNewDialogWindow(viewModel, ModelAction.Remove);
+			IsContactSelected = false;
 			Search();
+			IsContactSelected = false;
 		}
 
 		void Edit()
 		{
 			var viewModel = new ContactVM(SelectedContact, _contactManagerService, 
-				ServiceProviderFactory.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), true);
+				ServiceProviderSingleton.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), true);
 			WindowManager.OpenNewDialogWindow(viewModel, ModelAction.Change);
 			Search();
+			IsContactSelected = false;
 		}
 
 		void Show()
 		{
 			var viewModel = new ContactVM(SelectedContact, _contactManagerService, 
-				ServiceProviderFactory.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), false);
+				ServiceProviderSingleton.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), false);
 			WindowManager.OpenNewDialogWindow(viewModel, ModelAction.Show);
+			IsContactSelected = false;
 		}
 
-		void UpdateContactList()
+		void ShowAllContacts()
 		{
-			var contacts = _contactManagerService.GetAllContacts(false).GetAwaiter().GetResult();
+			var contacts = _contactManagerService.GetContactsByQuery(null, false)
+				.GetAwaiter().GetResult();
 			Contacts = new ObservableCollection<ContactDto>(contacts);
 			_foundContacts = Contacts;
 
@@ -214,32 +221,30 @@ namespace MyNotes.ViewModels
 
 		void Search()
 		{
-			IsContactSelected = false;
-
 			IEnumerable<ContactDto> contacts;
 
 			if (String.IsNullOrEmpty(SearchQuery))
 			{
 				Contacts = new ObservableCollection<ContactDto>(
-					_contactManagerService.GetAllContacts(BirthdaySoonIsChecked)
+					_contactManagerService.GetContactsByQuery(null, BirthDaySoonIsChecked)
 						.GetAwaiter().GetResult());
 			}
 			else
 			{
 				Contacts = new ObservableCollection<ContactDto>(
-					_contactManagerService.GetContactsByQuery(SearchQuery, BirthdaySoonIsChecked)
+					_contactManagerService.GetContactsByQuery(SearchQuery, BirthDaySoonIsChecked)
 						.GetAwaiter().GetResult());
 			}
 
 			_foundContacts = Contacts.Select(x => x);
 			_alphabetSearchManager.SetAvailableLetters(Contacts.Select(x => x.Name));
 			foreach ((AlphabetItem oldAlphabetItem, AlphabetItem newAlphabetItem) in SearchAlphabet.Zip(
-					_alphabetSearchManager.AvailableLetters
-						.Select(x => new AlphabetItem
-						{
-							Letter = x.Key,
-							IsEnabled = x.Value
-						})))
+				_alphabetSearchManager.AvailableLetters
+					.Select(x => new AlphabetItem
+					{
+						Letter = x.Key,
+						IsEnabled = x.Value
+					})))
 			{
 				if (oldAlphabetItem.IsEnabled != newAlphabetItem.IsEnabled)
 				{

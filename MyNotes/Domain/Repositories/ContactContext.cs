@@ -23,7 +23,7 @@ namespace MyNotes.Domain.Repositories
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite(@"Data Source=C:\Users\mikhail\sqlite_databases\MyNotes.db;Mode=ReadWriteCreate;");
+			optionsBuilder.EnableSensitiveDataLogging();
 		}
 	}
 }

@@ -6,13 +6,17 @@ namespace MyNotes.Infrastructure
 {
 	public class AlphabetSearchManager
 	{
-		public IDictionary<char, bool> AvailableLetters { private set; get; } = new Dictionary<char, bool>();
+		private string _alphabet;
+		public IDictionary<char, bool> AvailableLetters { private set; get; }
+			= new Dictionary<char, bool>();
+
 
 		public IDictionary<char, bool> SetAvailableLetters(IEnumerable<string> names)
 		{
+			DisableAvailableLetters();
 			foreach (var name in names)
 			{
-				AvailableLetters[name[0]] = true;
+				AvailableLetters[name.ToUpper()[0]] = true;
 			}
 
 			return AvailableLetters;
@@ -20,7 +24,13 @@ namespace MyNotes.Infrastructure
 
 		public AlphabetSearchManager(string alphabet)
 		{
-			foreach (var letter in alphabet) 
+			_alphabet = alphabet;
+			DisableAvailableLetters();
+		}
+
+		private void DisableAvailableLetters()
+		{
+			foreach (var letter in _alphabet)
 			{
 				AvailableLetters[letter] = false;
 			}

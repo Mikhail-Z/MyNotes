@@ -27,24 +27,24 @@
 				<ColumnDefinition Width="150" />
 			</Grid.ColumnDefinitions>
 			<ToolBar FontSize="13" Grid.Column="0" Height="50" VerticalAlignment="Top" Band="1" BandIndex="1">
-				<Button x:Name="AddBtn" Command="{Binding AddContactCommand}" IsEnabled="{Binding IsContactSelected}">
+				<Button x:Name="AddBtn" Command="{Binding AddContactCommand}">
 					Добавить
 				</Button>
 				<Separator/>
-				<Button x:Name="ChooseBtn" Command="{Binding ShowContactCommand}" IsEnabled="{Binding IsContactSelected}">
+				<Button x:Name="ChooseBtn" Command="{Binding ShowContactCommand}" IsEnabled="{Binding IsContactSelected, Mode=OneWay}">
 					Выбрать
 				</Button>
-				<Button x:Name="DeleteBtn" Command="{Binding RemoveContactCommand}" IsEnabled="{Binding IsContactSelected}">
+				<Button x:Name="DeleteBtn" Command="{Binding RemoveContactCommand}" IsEnabled="{Binding IsContactSelected, Mode=OneWay}">
 					Удалить
 				</Button>
-				<Button x:Name="EditBtn" Command="{Binding EditContactCommand}" IsEnabled="{Binding IsContactSelected}">
+				<Button x:Name="EditBtn" Command="{Binding EditContactCommand}" IsEnabled="{Binding IsContactSelected, Mode=OneWay}">
 					Редактировать
 				</Button>
 				<Separator />
 			</ToolBar>
 			<TextBox Grid.Column="1" Margin="5" Height="30" FontSize="16" Text="{Binding SearchQuery}" HorizontalAlignment="Stretch" />
 			<StackPanel Grid.Column="2" Margin="5" VerticalAlignment="Center" Orientation="Horizontal">
-				<CheckBox VerticalAlignment="Center" Content="Скоро ДР" Margin="5" IsChecked="{Binding BirthdaySoonIsChecked}"/>
+				<CheckBox VerticalAlignment="Center" Content="Скоро ДР" Margin="5" IsChecked="{Binding BirthDaySoonIsChecked}"/>
 				<Button  VerticalAlignment="Center" Grid.Row="0" Margin="5" BorderBrush="Black"  Height="30" FontSize="14" Command="{Binding SearchContactsCommand}">Найти</Button>
 			</StackPanel>
 		</Grid>
@@ -60,8 +60,17 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 			<ScrollViewer Grid.Column="0" Grid.ColumnSpan="7">
-				<DataGrid x:Name="phonesGrid" AutoGenerateColumns="True" IsReadOnly="True" ColumnWidth="*" SelectedItem="{Binding Path=SelectedContact}"  ItemsSource="{Binding Contacts}" HorizontalGridLinesBrush="DarkGray"
+				<DataGrid x:Name="phonesGrid" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Contacts}" ColumnWidth="*" SelectedItem="{Binding Path=SelectedContact}" HorizontalGridLinesBrush="DarkGray"
 					RowBackground="LightGray" RowHeight="30" FontSize="14" AlternatingRowBackground="White">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
+						<DataGridTextColumn Header="День Рождения" Binding="{Binding Path=BirthDay, StringFormat=dd.MM.yyyy}"/>
+						<DataGridTextColumn Header="Раб. телефон" Binding="{Binding Path=WorkPhones}"/>
+						<DataGridTextColumn Header="Дом. телефон" Binding="{Binding Path=HomePhones}"/>
+						<DataGridTextColumn Header="Skype" Binding="{Binding Path=Skypes}"/>
+						<DataGridTextColumn Header="Почта" Binding="{Binding Path=Emails}"/>
+						<DataGridTextColumn Header="Почта" Binding="{Binding Path=Comment}"/>
+					</DataGrid.Columns>
 					<i:Interaction.Triggers>
 						<i:EventTrigger EventName="SelectionChanged">
 							<i:InvokeCommandAction Command="{Binding EnableMenuButtons}"/>
@@ -73,7 +82,7 @@
 				<ListView ItemsSource="{Binding SearchAlphabet}">
 					<ListView.ItemTemplate>
 						<DataTemplate>
-							<Button Margin="1" MinWidth="20" Width="30" MinHeight="20" Height="30" Content="{Binding Path=Letter}" IsEnabled="{Binding Path=IsEditable}"/>
+							<Button Margin="1" MinWidth="20" Width="30" MinHeight="20" Height="30" Content="{Binding Path=Letter}" IsEnabled="{Binding Path=IsEnabled}"/>
 						</DataTemplate>
 					</ListView.ItemTemplate>
 					<i:Interaction.Triggers>

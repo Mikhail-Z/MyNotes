@@ -24,6 +24,7 @@ namespace MyNotes.Services
 		{
 			_repository = repository;
 			_logger = logger;
+			_logger.LogInformation("Some message");
 		}
 
 		public async Task<int> UpdateContact(ContactDto contactDto)
@@ -39,48 +40,39 @@ namespace MyNotes.Services
 			}
 		}
 
-		public async Task<IEnumerable<ContactDto>> GetContactsByQuery(string searchQuery, bool isBirthdaySoon, char? firstLetter=null)
+		public async Task<IEnumerable<ContactDto>> GetContactsByQuery(
+			string searchQuery, bool isBirthDaySoon, char? firstLetter=null)
 		{
-			Expression<Func<Contact, bool>> searchExpression = (Contact c) => (c.Name.Contains(searchQuery) ||
-				(firstLetter.HasValue ? c.Name.StartsWith(firstLetter.Value) : false)) ||
-				/*(c.HomePhones.Select(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||
-				(c.WorkPhones.Select(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||
-				(c.Emails.Select(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||
-				(c.Skypes.Select(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||*/
-				isBirthdaySoon ? (c.BirthDay < DateTime.Today.AddDays(MAX_DAYS_NUMBER_WHEN_BIRTHDAY_IS_SOON) && c.BirthDay >= DateTime.Today) : true;
+			Func<Contact, bool> searchQueryExpr =
+				(Contact c) => String.IsNullOrEmpty(searchQuery) ||
+					(c.Name.ToUpper().Contains(searchQuery.ToUpper()) ||
+					(c.HomePhones.Where(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||
+				(c.WorkPhones.Where(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||
+				(c.Emails.Where(phone => phone.Value.Contains(searchQuery)).Count() > 0) ||
+				(c.Skypes.Where(phone => phone.Value.Contains(searchQuery)).Count() > 0));
+
+			Func<Contact, bool> searchByLetterExpr = 
+				(Contact c) => !firstLetter.HasValue ||
+					c.Name.ToUpper().StartsWith(firstLetter.Value.ToString().ToUpper());
+
+			Func<Contact, bool> isBirthDaySoonExpr =
+				(Contact c) => !isBirthDaySoon || c.BirthDay.HasValue &&
+				new DateTime(
+					DateTime.Today.Year, 
+					c.BirthDay.Value.Month, 
+					c.BirthDay.Value.Day) < DateTime.Today.AddDays(MAX_DAYS_NUMBER_WHEN_BIRTHDAY_IS_SOON)
+				&& c.BirthDay >= DateTime.Today;
+
 			try
 			{
-				return (await _repository.SearchAsync(searchExpression))
+				return (await _repository.GetAll())
+					.Where(c => searchQueryExpr(c) && searchByLetterExpr(c) && isBirthDaySoonExpr(c))
 					.Select(c => new ContactDto(c));
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex.ToString());
 				return default;
-			}
-		}
-
-		public async Task<IEnumerable<ContactDto>> GetAllContacts(bool isBirthdaySoon)
-		{
-			try
-			{
-				if (isBirthdaySoon)
-				{
-					Expression<Func<Contact, bool>> searchExpression = (Contact c) =>
-						(c.BirthDay < DateTime.Today.AddDays(MAX_DAYS_NUMBER_WHEN_BIRTHDAY_IS_SOON)
-						&& c.BirthDay >= DateTime.Today);
-					return (await _repository.SearchAsync(searchExpression))
-						.Select(c => new ContactDto(c));
-				}
-				else
-				{
-					return (await _repository.GetAll()).Select(c => new ContactDto(c));
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.ToString());
-				return new ContactDto[0];
 			}
 		}
 

@@ -22,7 +22,7 @@
 			<Label Content="Имя" Grid.Row="0" Grid.Column="0"/>
 			<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}"/>
 			<Label Content="День рождения" Grid.Row="1" Grid.Column="0"/>
-			<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Birthday}"/>
+			<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding BirthDay}"/>
 			<Label Content="Домашний телефон" Grid.Row="2" Grid.Column="0"/>
 			<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PhoneNumber}"/>
 			<Label Content="Рабочий телефон" Grid.Row="3" Grid.Column="0"/>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyNotes.Domain.Interfaces
 {
-	public interface IAsyncRepository<T> //where T : EntityBase
+	public interface IAsyncRepository<T> where T : EntityBase
 	{
 		Task<T> GetByIdAsync(int id);
 
@@ -17,8 +17,8 @@ namespace MyNotes.Domain.Interfaces
 
 		Task<int> RemoveAsync(Contact contact);
 
-		Task<IEnumerable<T>> SearchAsync(Expression<Func<Contact, bool>> criteria);
+		Task<IEnumerable<Contact>> GetAll();
 
-		Task<IEnumerable<T>> GetAll();
+		Task<IEnumerable<T>> SearchAsync(Expression<Func<Contact, bool>> criteria);
 	}
 }

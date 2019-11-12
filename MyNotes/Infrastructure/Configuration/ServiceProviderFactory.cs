@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MyNotes.Infrastructure.Configuration
 {
-	public static class ServiceProviderFactory
+	public static class ServiceProviderSingleton
 	{
 		private static IServiceProvider _serviceProvider;
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.EventLog;
+using Microsoft.Extensions.Configuration;
+using NLog;
+using NLog.Extensions.Logging;
 using MyNotes.Domain.Entities;
 using MyNotes.Domain.Interfaces;
 using MyNotes.Domain.Repositories;
@@ -13,12 +15,9 @@ using MyNotes.ViewModels;
 using MyNotes.Views;
 using MyNotes.Windows;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace MyNotes
 {
@@ -41,12 +40,17 @@ namespace MyNotes
 			WindowManager.Register(typeof(ContactVM), ModelAction.Remove, typeof(RemoveContactWindow));
 
 			ServiceProvider = serviceCollection.BuildServiceProvider();
-			ServiceProviderFactory.ServiceProvider = ServiceProvider;
+			ServiceProviderSingleton.ServiceProvider = ServiceProvider;
 		}
 
 		private void App_OnStartup(object sender, StartupEventArgs e)
 		{
 			var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+			FrameworkElement.LanguageProperty.OverrideMetadata(
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(
+				XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
 			mainWindow.Show();
 		}
 
@@ -55,20 +59,20 @@ namespace MyNotes
 			var provider = services
 					.AddEntityFrameworkSqlite()
 					.BuildServiceProvider();
-			/*
 			services.AddDbContext<ContactContext>(options =>
 			{
 				options.UseSqlite(@"Data Source=C:\Users\mikhail\sqlite_databases\MyNotes.db;Mode=ReadWriteCreate;");
 				options.UseInternalServiceProvider(provider);
 			});
-			*/
 
-			services.AddLogging(config =>
+			LogManager.LoadConfiguration("NLog.config");
+			services.AddLogging(loggingBuilder =>
 			{
-				config.AddConsole();
+				loggingBuilder.ClearProviders();
+				loggingBuilder.AddNLog();
 			});
 
-			services.AddSingleton<AlphabetSearchManager>(new AlphabetSearchManager("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+			services.AddSingleton(new AlphabetSearchManager("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 			services.AddSingleton<IAsyncRepository<Contact>, EfContactRepository>();
 			services.AddSingleton<IContactManagerService, ContactManagerService>();
 			services.AddSingleton<MainViewVM>();

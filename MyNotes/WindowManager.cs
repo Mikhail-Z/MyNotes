@@ -24,6 +24,10 @@ namespace MyNotes
 			if (viewModel.GetType() == typeof(ContactVM))
 			{
 				((ContactVM)viewModel).CancelCommand = new DelegateCommand(window.Close);
+				if (action == ModelAction.Remove || action == ModelAction.Show)
+				{
+					//((ContactVM)viewModel).IsActionEnabled = true;
+				}
 			}
 			window.DataContext = viewModel;
 
