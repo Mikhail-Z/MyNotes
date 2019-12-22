@@ -16,7 +16,16 @@ namespace MyNotes.Infrastructure
 			DisableAvailableLetters();
 			foreach (var name in names)
 			{
-				AvailableLetters[name.ToUpper()[0]] = true;
+				char upperLetter;
+				if (Char.IsLetter(name[0]))
+				{
+					upperLetter = name.ToUpper()[0];
+				}
+				else
+				{
+					upperLetter = name[0];
+				}
+				AvailableLetters[upperLetter] = true;
 			}
 
 			return AvailableLetters;

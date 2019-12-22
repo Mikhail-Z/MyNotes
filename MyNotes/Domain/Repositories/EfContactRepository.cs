@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyNotes.Domain.Entities;
 using MyNotes.Domain.Interfaces;
+using MyNotes.Infrastructure;
 
 namespace MyNotes.Domain.Repositories
 {
@@ -79,5 +80,7 @@ namespace MyNotes.Domain.Repositories
 			
 			return _dbContext.SaveChangesAsync();
 		}
+
 	}
+	
 }

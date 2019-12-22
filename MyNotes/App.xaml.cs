@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using NLog;
 using NLog.Extensions.Logging;
 using MyNotes.Domain.Entities;
@@ -43,7 +44,7 @@ namespace MyNotes
 		}
 
 		private void App_OnStartup(object sender, StartupEventArgs e)
-		{
+		{	
 			var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
 			FrameworkElement.LanguageProperty.OverrideMetadata(
 				typeof(FrameworkElement),

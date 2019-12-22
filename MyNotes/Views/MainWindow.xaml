@@ -79,18 +79,27 @@
 				</DataGrid>
 			</ScrollViewer>
 			<Grid x:Name="AlphabetButtonsGrid" Grid.Column="7">
-				<ListView ItemsSource="{Binding SearchAlphabet}">
-					<ListView.ItemTemplate>
+				<ListBox ItemsSource="{Binding SearchAlphabet}">
+					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<Button Margin="1" MinWidth="20" Width="30" MinHeight="20" Height="30" Content="{Binding Path=Letter}" IsEnabled="{Binding Path=IsEnabled}"/>
+							<ToggleButton Command="{Binding DataContext.SearchByFirstLetterCommand, 
+                                            RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        IsChecked="{Binding IsSelected, 
+                                                Mode=TwoWay, 
+                                                RelativeSource={RelativeSource FindAncestor, 
+                                                                AncestorType={x:Type ListBoxItem}}}"
+                                        Content="{Binding Path=Letter}" HorizontalAlignment="Stretch"
+										  CommandParameter="{Binding}"
+										IsEnabled="{Binding Path=IsEnabled}" Margin="1" MinWidth="20" Width="30" MinHeight="20" Height="30"/>
+							<!--<Button Content="{Binding Path=Letter}" Command="{Binding DataContext.SearchByFirstLetterCommand}" IsEnabled="{Binding Path=IsEnabled}" Margin="1" MinWidth="20" Width="30" MinHeight="20" Height="30"/>-->
 						</DataTemplate>
-					</ListView.ItemTemplate>
-					<i:Interaction.Triggers>
+					</ListBox.ItemTemplate>
+					<!--<i:Interaction.Triggers>
 						<i:EventTrigger EventName="MouseDown">
 							<i:InvokeCommandAction Command="{Binding SearchByFirstLetterCommand}"/>
 						</i:EventTrigger>
-					</i:Interaction.Triggers>
-				</ListView>
+					</i:Interaction.Triggers>-->
+				</ListBox>
 			</Grid>
 		</Grid>
 	</Grid>

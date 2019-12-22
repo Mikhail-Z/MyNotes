@@ -20,18 +20,15 @@ namespace MyNotes
 		public static void OpenNewDialogWindow(object viewModel, ModelAction action)
 		{
 			var viewType = _windows[new Tuple<Type, ModelAction>(viewModel.GetType(), action)];
-			var window = Activator.CreateInstance(viewType) as Window;
+			Window newWindow;
+			newWindow = Activator.CreateInstance(viewType) as Window;
 			if (viewModel.GetType() == typeof(ContactVM))
 			{
-				((ContactVM)viewModel).CancelCommand = new DelegateCommand(window.Close);
-				if (action == ModelAction.Remove || action == ModelAction.Show)
-				{
-					//((ContactVM)viewModel).IsActionEnabled = true;
-				}
+				((ContactVM)viewModel).CancelCommand = new DelegateCommand(newWindow.Close);
 			}
-			window.DataContext = viewModel;
+			newWindow.DataContext = viewModel;
 
-			window.ShowDialog();
+			newWindow.ShowDialog();
 		}
 	}
 }

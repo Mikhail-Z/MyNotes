@@ -41,23 +41,20 @@ namespace MyNotes.ViewModels
 
 			EnableMenuButtons = new DelegateCommand(
 				() => { IsContactSelected = true; });
-			SearchByFirstLetterCommand = new DelegateCommand(() =>
-			{
-				Contacts = new ObservableCollection<ContactDto>(
-					_foundContacts.Where(x => x.Name.StartsWith(SelectedLetter)));
-			});
+			SearchByFirstLetterCommand = new DelegateCommand<object>(SelectButton);
 
 			ShowAllContacts();
 		}
 
+		public void SelectButton(object c)
+		{
+			char selectedLetter = ((AlphabetItem)c).Letter;
+			Contacts = new ObservableCollection<ContactDto>(
+					_foundContacts.Where(x => x.Name.ToUpper().StartsWith(selectedLetter)));
+		}
 
 		#region ui
 		public string Title { get; set; } = "MyNotes";
-
-		public char SelectedLetter { 
-		   get; 
-		   set; 
-		}
 
 		public bool BirthDaySoonIsChecked
 		{
@@ -141,7 +138,7 @@ namespace MyNotes.ViewModels
 
 
 		#region commands
-		public DelegateCommand SearchByFirstLetterCommand
+		public DelegateCommand<object> SearchByFirstLetterCommand
 		{
 			get;
 		}
@@ -184,7 +181,6 @@ namespace MyNotes.ViewModels
 			var viewModel = new ContactVM(SelectedContact, _contactManagerService, 
 				ServiceProviderSingleton.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), false);
 			WindowManager.OpenNewDialogWindow(viewModel, ModelAction.Remove);
-			IsContactSelected = false;
 			Search();
 			IsContactSelected = false;
 		}
@@ -203,7 +199,7 @@ namespace MyNotes.ViewModels
 			var viewModel = new ContactVM(SelectedContact, _contactManagerService, 
 				ServiceProviderSingleton.ServiceProvider.GetRequiredService<ILogger<ContactVM>>(), false);
 			WindowManager.OpenNewDialogWindow(viewModel, ModelAction.Show);
-			IsContactSelected = false;
+			IsContactSelected = true;
 		}
 
 		void ShowAllContacts()
