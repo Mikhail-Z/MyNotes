@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using MyNotes.Domain.Entities;
 using MyNotes.Domain.Interfaces;
-using MyNotes.Domain.Repositories;
 using MyNotes.Infrastructure;
 using MyNotes.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace MyNotes.Services
